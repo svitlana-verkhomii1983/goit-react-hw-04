@@ -1,0 +1,19 @@
+.container {
+  padding: 20px;
+}
+
+.castList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.castItem {
+  list-style: none;
+  width: 200px;
+}
+
+.actorImage {
+  width: 100%;
+  border-radius: 10px;
+}

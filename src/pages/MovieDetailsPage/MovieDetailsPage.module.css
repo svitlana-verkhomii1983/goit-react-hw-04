@@ -1,0 +1,15 @@
+.container {
+  padding: 20px;
+}
+
+.backLink {
+  display: inline-block;
+  margin-bottom: 20px;
+  color: #0073e6;
+  text-decoration: none;
+}
+
+.movieDetails {
+  display: flex;
+  gap: 20px;
+}
