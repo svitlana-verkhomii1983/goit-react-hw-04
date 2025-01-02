@@ -1,28 +1,25 @@
-.searchBar {
+.header {
+  background-color: #002366;
   padding: 20px;
-  background-color: #f8f8f8;
+  text-align: center;
 }
 
 .form {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.inputWrapper {
   position: relative;
+  display: inline-block;
 }
 
 .icon {
   position: absolute;
+  top: 12px;
   left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
+  color: #000;
 }
 
 .input {
-  width: 300px;
-  padding: 10px 10px 10px 30px;
-  border: 1px solid #ccc;
+  width: 200px;
+  height: 45px;
+  padding-left: 35px;
+  border: none;
   border-radius: 5px;
 }

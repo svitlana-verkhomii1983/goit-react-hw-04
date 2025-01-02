@@ -1,66 +1,58 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useParams, useLocation, Outlet, Link } from 'react-router-dom';
-import axios from 'axios';
-import Loader from '../../components/Loader/Loader';
-import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
+import React, { useState, useEffect } from 'react';
+import { useParams, Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import fetchMovieDetails from '../../api';
 import styles from './MovieDetailsPage.module.css';
-
-const defaultImg = "https://dl-media.viber.com/10/share/2/long/vibes/icon/image/0x0/95e0/5688fdffb84ff8bed4240bcf3ec5ac81ce591d9fa9558a3a968c630eaba195e0.jpg";
 
 const MovieDetailsPage = () => {
   const { movieId } = useParams();
-  const location = useLocation();
-  const backLink = useRef(location.state?.from ?? '/movies');
   const [movieData, setMovieData] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const backLink = location.state?.from || '/movies';
 
   useEffect(() => {
     if (!movieId) return;
 
-    const fetchMovieDetails = async () => {
-      setIsLoading(true);
-      setError(null);
-
+    const fetchData = async () => {
+      setLoading(true);
       try {
-        const response = await axios.get(`https://api.example.com/movie/${movieId}`);
-        setMovieData(response.data);
+        const data = await fetchMovieDetails(movieId);
+        setMovieData(data);
       } catch (error) {
-        setError('Failed to fetch movie details');
+        setError(error.message);
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     };
 
-    fetchMovieDetails();
+    fetchData();
   }, [movieId]);
 
   return (
     <div className={styles.container}>
-      <Link to={backLink.current} className={styles.backLink}>Go back</Link>
-      {error && <ErrorMessage message={error} />}
-      {isLoading ? (
-        <Loader />
-      ) : (
-        movieData && (
-          <div className={styles.movieDetails}>
-            <img
-              src={
-                movieData.poster_path
-                  ? `https://image.tmdb.org/t/p/w500/${movieData.poster_path}`
-                  : defaultImg
-              }
-              width={250}
-              alt="poster"
-            />
-            <div>
-              <h2>{movieData.title}</h2>
-              <p>{movieData.overview}</p>
-            </div>
-          </div>
-        )
+      <button className={styles.backButton} onClick={() => navigate(backLink)}>Go back</button>
+      {loading && <p>Loading...</p>}
+      {error && <p className={styles.error}>{error}</p>}
+      {movieData && (
+        <div className={styles.movieDetails}>
+          <img
+            src={
+              movieData.poster_path
+                ? `https://image.tmdb.org/t/p/w500/${movieData.poster_path}`
+                : 'https://via.placeholder.com/250'
+            }
+            width={250}
+            alt="poster"
+          />
+          <h2>{movieData.title}</h2>
+          <p>{movieData.overview}</p>
+          <Link to="cast" state={{ from: location.state }}>Cast</Link>
+          <Link to="reviews" state={{ from: location.state }}>Reviews</Link>
+          <Outlet />
+        </div>
       )}
-      <Outlet />
     </div>
   );
 };
